@@ -12,6 +12,11 @@ impl ProductService {
     pub fn create(mut product: Product) -> Result<Product> {
         product.product_type = product.product_type.to_uppercase();
         let product_result: Product = ProductRepository::add(product);
+        let _ = NotificationService::notify(
+            product_result.product_type.clone(),
+            String::from("CREATED"),
+            product_result.clone()
+        )?;
 
         return Ok(product_result);
     }
@@ -40,6 +45,11 @@ impl ProductService {
             ));
         }
         let product: Product = product_opt.unwrap();
+        let _ = NotificationService::notify(
+            product.product_type.clone(),
+            String::from("DELETED"),
+            product.clone()
+        )?;
 
         return Ok(Json::from(product));
     }
