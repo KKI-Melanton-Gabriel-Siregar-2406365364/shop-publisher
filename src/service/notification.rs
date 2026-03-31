@@ -20,11 +20,15 @@ impl NotificationService {
         Ok(saved_subscriber)
     }
 
-    pub fn unsubscribe(_product_type: String, _url: String) -> Result<bool> {
-        Err(compose_error_response(
-            Status::NotImplemented,
-            String::from("Unsubscribe is not implemented yet."),
-        ))
+    pub fn unsubscribe(product_type: String, url: String) -> Result<bool> {
+        if url.is_empty() {
+            return Err(compose_error_response(
+                Status::BadRequest,
+                String::from("Query parameter `url` must not be empty."),
+            ));
+        }
+
+        Ok(SubscriberRepository::delete(product_type, url))
     }
 
     pub fn notify(_product_type: String, _status: String, _product: crate::model::product::Product) -> Result<Vec<Notification>> {
