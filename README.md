@@ -77,6 +77,11 @@ This is the place for you to write reflections:
 ### Mandatory (Publisher) Reflections
 
 #### Reflection Publisher-1
+1. In this BambangShop case, a single `Subscriber` model struct is enough for current requirements because we only have one concrete notification receiver behavior (HTTP callback URL). A trait-based abstraction becomes useful if we need multiple subscriber behaviors (for example, webhook subscriber, email subscriber, queue subscriber) with different update mechanisms.
+
+2. For uniqueness on `url` per product type, `Vec` can work for small datasets but requires linear scans for lookup and deletion. `DashMap` is more appropriate here because it gives efficient keyed access and safe concurrent mutations. In this project, using a map keyed by product type also keeps grouping explicit and clean.
+
+3. Singleton pattern only controls instance count; it does not automatically provide thread-safe concurrent access. We still need a synchronization/concurrency-safe data structure. `DashMap` solves the thread-safety and concurrent access problem directly, so it is still needed even when the global store behaves like a singleton.
 
 #### Reflection Publisher-2
 
