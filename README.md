@@ -91,3 +91,8 @@ This is the place for you to write reflections:
 3. Postman helps by giving fast repeatable API testing for every endpoint without writing a frontend first. For this project, collection-based requests and saved request bodies are very helpful to verify subscribe/unsubscribe/publish flows quickly. Features I find most useful are collections, environments (for base URL/ports), and automated tests in request scripts for regression checks.
 
 #### Reflection Publisher-3
+1. This tutorial uses the **Push** variation of Observer Pattern. The publisher actively sends notification payloads to subscriber endpoints when create/promote/delete events occur.
+
+2. If we used Pull instead, subscribers would need to poll the publisher for updates. The advantage is simpler publisher-side delivery flow and potentially better subscriber-controlled retry logic. The disadvantages are higher latency (poll interval), wasted requests when there is no update, and more complexity on subscriber-side scheduling/state tracking.
+
+3. Without multi-threading in the notification process, notifications would be sent sequentially. One slow or unreachable subscriber could delay all others and increase endpoint response time for product actions. This reduces throughput and makes user-facing operations less responsive under larger subscriber counts.
