@@ -30,7 +30,15 @@ impl SubscriberRepository {
     }
 
     pub fn delete(product_type: String, url: String) -> bool {
-        let _ = (product_type, url);
+        let normalized_product_type = product_type.to_uppercase();
+        let subscriber_url = url.to_lowercase();
+
+        if let Some(mut subscribers) = SUBSCRIBERS.get_mut(&normalized_product_type) {
+            let original_len = subscribers.len();
+            subscribers.retain(|subscriber| subscriber.url.to_lowercase() != subscriber_url);
+            return subscribers.len() < original_len;
+        }
+
         false
     }
 }
