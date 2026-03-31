@@ -4,6 +4,7 @@ use rocket::serde::json::Json;
 use bambangshop::{Result, compose_error_response};
 use crate::model::product::Product;
 use crate::repository::product::ProductRepository;
+use crate::service::notification::NotificationService;
 
 pub struct ProductService;
 
@@ -41,5 +42,24 @@ impl ProductService {
         let product: Product = product_opt.unwrap();
 
         return Ok(Json::from(product));
+    }
+
+    pub fn publish(id: usize) -> Result<Product> {
+        let product_opt: Option<Product> = ProductRepository::get_by_id(id);
+        if product_opt.is_none() {
+            return Err(compose_error_response(
+                Status::NotFound,
+                String::from("Product not found.")
+            ));
+        }
+
+        let product = product_opt.unwrap();
+        let _ = NotificationService::notify(
+            product.product_type.clone(),
+            String::from("PROMOTED"),
+            product.clone()
+        )?;
+
+        Ok(product)
     }
 }
