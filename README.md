@@ -84,5 +84,10 @@ This is the place for you to write reflections:
 3. Singleton pattern only controls instance count; it does not automatically provide thread-safe concurrent access. We still need a synchronization/concurrency-safe data structure. `DashMap` solves the thread-safety and concurrent access problem directly, so it is still needed even when the global store behaves like a singleton.
 
 #### Reflection Publisher-2
+1. Separating Service and Repository from Model keeps responsibilities focused: Model defines data shape, Repository handles persistence concerns, and Service holds business rules/orchestration. This separation improves maintainability, testability, and makes refactoring easier because storage logic changes do not force business-logic rewrites.
+
+2. If we only used Models, each model would gradually contain endpoint orchestration, validation, repository access, and inter-model coordination. That would produce high coupling between `Product`, `Subscriber`, and `Notification`, making changes risky and causing methods to become large and difficult to test independently.
+
+3. Postman helps by giving fast repeatable API testing for every endpoint without writing a frontend first. For this project, collection-based requests and saved request bodies are very helpful to verify subscribe/unsubscribe/publish flows quickly. Features I find most useful are collections, environments (for base URL/ports), and automated tests in request scripts for regression checks.
 
 #### Reflection Publisher-3
