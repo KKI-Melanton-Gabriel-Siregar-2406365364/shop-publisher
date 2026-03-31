@@ -12,7 +12,12 @@ pub struct SubscriberRepository;
 
 impl SubscriberRepository {
     pub fn add(product_type: String, subscriber: Subscriber) -> Subscriber {
-        let _ = (product_type, subscriber.clone());
+        let normalized_product_type = product_type.to_uppercase();
+        SUBSCRIBERS
+            .entry(normalized_product_type)
+            .and_modify(|subscribers| subscribers.push(subscriber.clone()))
+            .or_insert_with(|| vec![subscriber.clone()]);
+
         subscriber
     }
 
