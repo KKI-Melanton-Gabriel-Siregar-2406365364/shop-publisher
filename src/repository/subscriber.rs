@@ -22,8 +22,11 @@ impl SubscriberRepository {
     }
 
     pub fn list_all(product_type: String) -> Vec<Subscriber> {
-        let _ = product_type;
-        vec![]
+        let normalized_product_type = product_type.to_uppercase();
+        SUBSCRIBERS
+            .get(&normalized_product_type)
+            .map(|subscribers| subscribers.clone())
+            .unwrap_or_default()
     }
 
     pub fn delete(product_type: String, url: String) -> bool {
